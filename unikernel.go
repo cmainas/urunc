@@ -280,6 +280,7 @@ func (u *Unikernel) Execve() error {
 }
 
 // TODO: This never gets called. Remove(?)
+// COPY
 func (u *Unikernel) Save() {
 	_ = u.saveContainerState()
 }
@@ -340,6 +341,7 @@ func (u *Unikernel) saveContainerState() error {
 	return nil
 }
 
+// COPY
 func (u *Unikernel) GetInitSockAddr(mustExist bool) (string, error) {
 	if mustExist {
 		Log.Info("trying to find existing init.sock")
@@ -351,6 +353,7 @@ func (u *Unikernel) GetInitSockAddr(mustExist bool) (string, error) {
 	return initSockAddr, ensureValidSockAddr(initSockAddr, mustExist)
 }
 
+// COPY
 func (u *Unikernel) GetUruncSockAddr(mustExist bool) (string, error) {
 	Log.Info(u.BaseDir, "/urunc.sock")
 	uruncSockAddr := filepath.Join(u.BaseDir, "urunc.sock")

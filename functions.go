@@ -153,6 +153,7 @@ func setupUnikernelContainer(context *cli.Context) {
 	}
 	defer conn.Close()
 
+	// TODO: Why chdir?
 	err = os.Chdir("/")
 	if err != nil {
 		Log.WithError(err).Error("failed to chdir")
