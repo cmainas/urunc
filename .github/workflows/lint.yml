@@ -2,7 +2,7 @@ name: Code linting
 on:
   push:
     branches:
-      - pre_alpha_debug
+      - feat_refactor
       - main
   pull_request:
 

@@ -4,7 +4,6 @@ on:
   push:
       branches:
         - main
-        - pre_alpha_debug
   workflow_dispatch:
 
 jobs:
