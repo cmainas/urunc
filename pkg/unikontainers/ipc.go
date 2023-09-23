@@ -75,8 +75,8 @@ func SockAddrExists(sockAddr string) bool {
 	return false
 }
 
-// sendIPCMessage creates a new connection to socketAddress, sends the message and closes the connection
-func sendIPCMessage(socketAddress string, message IPCMessage) error {
+// SendIPCMessage creates a new connection to socketAddress, sends the message and closes the connection
+func SendIPCMessage(socketAddress string, message IPCMessage) error {
 	conn, err := net.Dial("unix", socketAddress)
 	if err != nil {
 		return err

@@ -25,14 +25,14 @@ import (
 	"golang.org/x/sys/unix"
 
 	"github.com/jackpal/gateway"
-	"github.com/nubificus/urunc/internal/log"
+	"github.com/sirupsen/logrus"
 	"github.com/vishvananda/netlink"
 )
 
 const DefaultInterface = "eth0"
 const DefaultTap = "tap0_urunc"
 
-var netLog = log.BaseLogEntry().WithField("subsystem", "network")
+var netLog = logrus.WithField("subsystem", "network")
 
 type UnikernelNetworkInfo struct {
 	TapDevice string
