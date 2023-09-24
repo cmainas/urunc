@@ -15,7 +15,10 @@
 package main
 
 import (
+	"os"
+
 	"github.com/nubificus/urunc/pkg/unikontainers"
+	"github.com/sirupsen/logrus"
 	"github.com/urfave/cli"
 )
 
@@ -39,12 +42,19 @@ signal to the init process of the "ubuntu01" container:
 		},
 	},
 	Action: func(context *cli.Context) error {
+		logrus.WithField("args", os.Args).Info("urunc INVOKED")
+
 		if err := checkArgs(context, 1, minArgs); err != nil {
 			return err
 		}
 		if err := checkArgs(context, 2, maxArgs); err != nil {
 			return err
 		}
+		err := handleNonBimaContainer(context)
+		if err != nil {
+			return err
+		}
+
 		return killUnikontainer(context)
 	},
 }

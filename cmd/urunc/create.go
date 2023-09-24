@@ -63,9 +63,15 @@ var createCommand = cli.Command{
 		},
 	},
 	Action: func(context *cli.Context) error {
+		logrus.WithField("args", os.Args).Info("urunc INVOKED")
 		if err := checkArgs(context, 1, exactArgs); err != nil {
 			return err
 		}
+		err := handleNonBimaContainer(context)
+		if err != nil {
+			return err
+		}
+
 		if !context.Bool("reexec") {
 			return createUnikontainer(context)
 		}

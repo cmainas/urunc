@@ -68,6 +68,7 @@ func handleNonBimaContainer(context *cli.Context) error {
 	containerID := context.Args().First()
 	root := context.GlobalString("root")
 	if containerID == "" {
+		// cli.ShowAppHelpAndExit(context, 129)
 		return nil
 	}
 	ctrNamespace := filepath.Base(root)
@@ -77,6 +78,7 @@ func handleNonBimaContainer(context *cli.Context) error {
 		logrus.Info("This is a bima container! Proceeding...")
 		return nil
 	}
+	logrus.Info("This is a normal container. Calling runc...")
 	args := os.Args
 	binPath, err := exec.LookPath("runc")
 	if err != nil {

@@ -15,7 +15,10 @@
 package main
 
 import (
+	"os"
+
 	"github.com/nubificus/urunc/pkg/unikontainers"
+	"github.com/sirupsen/logrus"
 	"github.com/urfave/cli"
 )
 
@@ -39,7 +42,12 @@ status of "ubuntu01" as "stopped" the following will delete resources held for
 		},
 	},
 	Action: func(context *cli.Context) error {
+		logrus.WithField("args", os.Args).Info("urunc INVOKED")
 		if err := checkArgs(context, 1, exactArgs); err != nil {
+			return err
+		}
+		err := handleNonBimaContainer(context)
+		if err != nil {
 			return err
 		}
 		return deleteUnikernelContainer(context)

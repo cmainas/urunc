@@ -16,7 +16,9 @@ package main
 
 import (
 	"fmt"
+	"os"
 
+	"github.com/sirupsen/logrus"
 	"github.com/urfave/cli"
 )
 
@@ -58,9 +60,16 @@ var runCommand = cli.Command{
 		},
 	},
 	Action: func(context *cli.Context) error {
+		logrus.WithField("args", os.Args).Info("urunc INVOKED")
+
 		if err := checkArgs(context, 1, exactArgs); err != nil {
 			return err
 		}
+		err := handleNonBimaContainer(context)
+		if err != nil {
+			return err
+		}
+
 		// TODO: This is a refactor of what the previous code did, however I have a feeling
 		// that it will not work...
 		if err := reexecUnikontainer(context); err != nil {

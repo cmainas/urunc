@@ -17,6 +17,8 @@ package main
 import (
 	"errors"
 	"io"
+	"log"
+	"log/syslog"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -24,6 +26,8 @@ import (
 	"strings"
 
 	"github.com/sirupsen/logrus"
+	lSyslog "github.com/sirupsen/logrus/hooks/syslog"
+
 	"github.com/urfave/cli"
 )
 
@@ -87,9 +91,6 @@ func main() {
 			Usage: "ignore cgroup permission errors ('true', 'false', or 'auto')",
 		},
 	}
-	app.Action = func(context *cli.Context) {
-		os.Exit(-1)
-	}
 	app.Commands = []cli.Command{
 		createCommand,
 		deleteCommand,
@@ -100,15 +101,7 @@ func main() {
 		// stateCommand,
 	}
 	app.Before = func(context *cli.Context) error {
-		if context.Args().First() == "" || context.Command.FullName() == "" {
-			cli.ShowAppHelpAndExit(context, -1)
-		}
 		if err := reviseRootDir(context); err != nil {
-			return err
-		}
-		if err := handleNonBimaContainer(context); err != nil {
-			logrus.Error(err.Error())
-			fatal(err)
 			return err
 		}
 		return configLogrus(context)
@@ -160,6 +153,32 @@ func reviseRootDir(context *cli.Context) error {
 }
 
 func configLogrus(context *cli.Context) error {
+	logrus.SetFormatter(&logrus.TextFormatter{
+		DisableColors: false,
+		FullTimestamp: true,
+		ForceQuote:    true,
+	})
+	writer, err := syslog.New(syslog.LOG_DEBUG, "")
+	if err != nil {
+		return err
+	}
+	logrus.SetLevel(logrus.DebugLevel)
+	logrus.SetOutput(writer)
+
+	// TODO: Remove this from production
+	logrus.SetReportCaller(true)
+
+	// This causes every log to be logged twice
+	// hook, err := logrus_syslog.NewSyslogHook("", "", syslog.LOG_INFO, "")
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
+
+	// Add the syslog hook to logrus
+	// logger.AddHook(hook)
+	return nil
+}
+func oldconfigLogrus(context *cli.Context) error {
 	if context.GlobalBool("debug") {
 		logrus.SetLevel(logrus.DebugLevel)
 		logrus.SetReportCaller(true)
@@ -187,6 +206,11 @@ func configLogrus(context *cli.Context) error {
 	default:
 		return errors.New("invalid log-format: " + f)
 	}
+	hook, err := lSyslog.NewSyslogHook("", "", syslog.LOG_DEBUG, "")
+	if err != nil {
+		log.Fatal(err)
+	}
+	logrus.AddHook(hook)
 
 	if file := context.GlobalString("log"); file != "" {
 		f, err := os.OpenFile(file, os.O_CREATE|os.O_WRONLY|os.O_APPEND|os.O_SYNC, 0o644)
