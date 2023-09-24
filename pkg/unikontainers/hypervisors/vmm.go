@@ -53,18 +53,18 @@ func NewVMM(vmmType VmmType) (vmm VMM, err error) {
 		}
 	}()
 	switch vmmType {
-	case HvtVmm:
-		vmmPath, err := exec.LookPath(HvtBinary)
+	case Solo5HvtVmm:
+		vmmPath, err := exec.LookPath(Solo5HvtBinary)
 		if err != nil {
 			return nil, ErrVMMNotInstalled
 		}
-		return &HVT{binary: HvtBinary, binaryPath: vmmPath}, nil
-	case SptVmm:
-		vmmPath, err := exec.LookPath(SptBinary)
+		return &SOLO5{binary: Solo5HvtBinary, binaryPath: vmmPath}, nil
+	case Solo5SptVmm:
+		vmmPath, err := exec.LookPath(Solo5SptBinary)
 		if err != nil {
 			return nil, ErrVMMNotInstalled
 		}
-		return &SPT{binary: SptBinary, binaryPath: vmmPath}, nil
+		return &SOLO5{binary: Solo5SptBinary, binaryPath: vmmPath}, nil
 	case QemuVmm:
 		vmmPath, err := exec.LookPath(QemuBinary + cpuArch())
 		if err != nil {
