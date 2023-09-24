@@ -21,40 +21,40 @@ import (
 )
 
 const (
-	HvtVmm    VmmType = "hvt"
-	HvtBinary string  = "solo5-hvt"
+	SptVmm    VmmType = "spt"
+	SptBinary string  = "solo5-spt"
 )
 
-type HVT struct {
+type SPT struct {
 	binaryPath string
 	binary     string
 }
 
 // Stop is an empty function to satisfy VMM interface compatibility requirements.
 // It does not perform any actions and always returns nil.
-func (h *HVT) Stop(_ string) error {
+func (h *SPT) Stop(_ string) error {
 	return nil
 }
 
-// Path returns the path to the hvt binary.
-func (h *HVT) Path() string {
+// Path returns the path to the spt binary.
+func (h *SPT) Path() string {
 	return h.binaryPath
 }
 
-// Ok checks if the hvt binary is available in the system's PATH.
-func (h *HVT) Ok() error {
-	if _, err := exec.LookPath(HvtBinary); err != nil {
+// Ok checks if the spt binary is available in the system's PATH.
+func (h *SPT) Ok() error {
+	if _, err := exec.LookPath(SptBinary); err != nil {
 		return ErrVMMNotInstalled
 	}
 	return nil
 }
 
-func (h *HVT) Execve(args ExecArgs) error {
+func (h *SPT) Execve(args ExecArgs) error {
 	cmdString := h.binaryPath + " --mem=512"
 	cmdString = appendNonEmpty(cmdString, " --net:tap=", args.TapDevice)
 	cmdString = appendNonEmpty(cmdString, " --block:rootfs=", args.BlockDevice)
 	cmdString += " " + args.UnikernelPath + " " + args.Command
 	cmdArgs := strings.Split(cmdString, " ")
-	vmmLog.WithField("hvt command", cmdString).Debug("Ready to execve hvt")
+	vmmLog.WithField("spt command", cmdString).Debug("Ready to execve spt")
 	return syscall.Exec(h.binaryPath, cmdArgs, args.Environment) //nolint: gosec
 }
