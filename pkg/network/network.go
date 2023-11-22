@@ -138,25 +138,6 @@ func Setup() (*UnikernelNetworkInfo, error) {
 	}
 	netLog.WithField("tap", tapLink).Debug("Created TAP device")
 
-	err = AddIngressQdisc(tapLink)
-	if err != nil {
-		return nil, err
-	}
-
-	err = AddIngressQdisc(redirectLink)
-	if err != nil {
-		return nil, err
-	}
-
-	err = AddRedirectFilter(tapLink, redirectLink)
-	if err != nil {
-		return nil, err
-	}
-
-	err = AddRedirectFilter(redirectLink, tapLink)
-	if err != nil {
-		return nil, err
-	}
 	return &UnikernelNetworkInfo{
 		TapDevice: tapLink.Attrs().Name,
 		EthDevice: ifaceInfo,

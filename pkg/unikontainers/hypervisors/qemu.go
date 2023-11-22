@@ -41,10 +41,10 @@ func (q *Qemu) Path() string {
 }
 
 func (q *Qemu) Execve(args ExecArgs) error {
-	cmdString := q.Path() + " -cpu host -m 512 -enable-kvm -nographic -vga none"
+	cmdString := q.Path() + " -cpu host -m 32 -enable-kvm -nographic -vga none"
 	cmdString += " -kernel " + args.UnikernelPath
 	if args.TapDevice != "" {
-		cmdString += " -net nic,model=virtio -net tap,script=no,ifname=" + args.TapDevice
+		cmdString += " -netdev user,id=net7,hostfwd=tcp::8080-:8080 -device virtio-net-pci,netdev=net7"
 	}
 	if args.BlockDevice != "" {
 		cmdString += " -initrd " + args.BlockDevice

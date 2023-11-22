@@ -42,12 +42,12 @@ func newUnikraftCli(data UnikernelParams) (string, error) {
 
 	cli_opts.Command = data.CmdLine
 
-	cli_opts.Net.Address = "netdev.ipv4_addr=" + data.EthDeviceIP
-	cli_opts.Net.Gateway = "netdev.ipv4_gw_addr=" + data.EthDeviceGateway
-	cli_opts.Net.Mask = "netdev.ipv4_subnet_mask=" + data.EthDeviceMask
-
 	cli_opts.Blk.RootFs = "vfs.rootfs=" + "initrd"
 	cli_opts.Blk.DevTag = ""
+
+	cli_opts.Net.Address = "netdev.ipv4_addr=10.0.2.15"
+	cli_opts.Net.Gateway = "netdev.ipv4_gw_addr=10.0.2.2"
+	cli_opts.Net.Mask = "netdev.ipv4_subnet_mask=255.255.255.0"
 
 	return fmt.Sprintf("%s %s %s %s %s -- %s", cli_opts.Net.Address,
 						   cli_opts.Net.Gateway,
