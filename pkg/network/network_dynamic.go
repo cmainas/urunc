@@ -87,7 +87,7 @@ func (n DynamicNetwork) NetworkSetup() (*UnikernelNetworkInfo, error) {
 			return nil, err
 		}
 	}
-	newIPAddr := strings.ReplaceAll("10.10.X.2", "X", strconv.Itoa(tapIndex+1))
+	newIPAddr := strings.ReplaceAll("10.10.X.2/24", "X", strconv.Itoa(tapIndex+1))
 	ipn, err := netlink.ParseAddr(newIPAddr)
 	if err != nil {
 		return nil, err

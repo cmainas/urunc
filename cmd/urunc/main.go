@@ -102,6 +102,7 @@ func main() {
 		runCommand,
 		// specCommand,
 		startCommand,
+		execCommand,
 		// stateCommand,
 	}
 	app.Before = func(context *cli.Context) error {

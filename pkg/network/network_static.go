@@ -22,7 +22,7 @@ import (
 	"github.com/vishvananda/netlink"
 )
 
-const StaticIPAddr = "10.10.1.1"
+const StaticIPAddr = "10.10.1.1/24"
 
 type StaticNetwork struct {
 	// ftaxnv tap device me ip 10.10.1.1
@@ -70,8 +70,8 @@ func (n StaticNetwork) NetworkSetup() (*UnikernelNetworkInfo, error) {
 	return &UnikernelNetworkInfo{
 		TapDevice: newTapDevice.Attrs().Name,
 		EthDevice: Interface{
-			IP:             "10.10.10.2",
-			DefaultGateway: "10.10.10.1",
+			IP:             "10.10.1.2",
+			DefaultGateway: "10.10.1.1",
 			Mask:           "255.255.255.0",
 			Interface:      "eth0", // or tap0_urunc?
 		},
