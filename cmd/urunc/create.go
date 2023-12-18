@@ -69,27 +69,25 @@ var createCommand = cli.Command{
 		if err := checkArgs(context, 1, exactArgs); err != nil {
 			return err
 		}
-		err := handleNonBimaContainer(context)
-		if err != nil {
-			return err
-		}
-
 		if !context.Bool("reexec") {
+			logrus.Error("Not reexec")
 			containerID := context.Args().First()
 			nowTime := time.Now().UnixNano()
 			metrics.Log(fmt.Sprintf("%s,TS00,%d", containerID, nowTime))
-			if !context.Bool("reexec") {
-				err := handleQueueProxy(context)
-				if err != nil {
-					return err
-				}
-				err = handleNonBimaContainer(context)
-				if err != nil {
-					return err
-				}
-				return createUnikontainer(context)
+			logrus.Error("calling handle queue proxy")
+			err := handleQueueProxy(context)
+			if err != nil {
+				return err
+			}
+			err = handleNonBimaContainer(context)
+			if err != nil {
+				return err
 			}
 			return createUnikontainer(context)
+		}
+		err := handleNonBimaContainer(context)
+		if err != nil {
+			return err
 		}
 		containerID := context.Args().First()
 		nowTime := time.Now().UnixNano()

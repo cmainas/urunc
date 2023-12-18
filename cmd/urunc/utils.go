@@ -121,6 +121,7 @@ func fatalWithCode(err error, ret int) {
 // handleQueueProxy check if provided bundle is a queue-proxy container
 // and adds a hardcoded IP to the process's environment
 func handleQueueProxy(context *cli.Context) error {
+	logrus.Error("handleQueueProxy")
 	containerID := context.Args().First()
 	root := context.GlobalString("root")
 	if containerID == "" {
@@ -145,8 +146,9 @@ func handleQueueProxy(context *cli.Context) error {
 	}
 	containerName := spec.Annotations["io.kubernetes.cri.container-name"]
 	if containerName == "queue-proxy" {
-		logrus.Info("This is a queue-proxy container. Adding IP env.")
+		logrus.Error("This is a queue-proxy container. Adding IP env.")
 		spec.Process.Env = append(spec.Process.Env, "REDIRECT_IP=10.10.1.2")
+		spec.Process.Env = append(spec.Process.Env, "URUNC_TEST_ENV=test")
 		fileInfo, err := os.Stat(configDir)
 		if err != nil {
 			return fmt.Errorf("error getting file info: %v", err)
