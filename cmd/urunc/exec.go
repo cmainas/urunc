@@ -18,11 +18,10 @@ import (
 	"github.com/urfave/cli"
 )
 
-var execUsage = `<container-id>
+var execUsage = `<container-id> <command>
 
-Where "<container-id>" is your name for the instance of the container that you
-are starting. The name you provide for the container instance must be unique on
-your host.`
+Where "<container-id>" is the name for the instance of the container and
+"<command>" is the command to be executed in the container.`
 
 var execDescription = `exec description`
 
