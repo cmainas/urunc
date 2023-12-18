@@ -74,7 +74,7 @@ func getInterfaceInfo(iface string) (InterfaceInfo, error) {
 	if mask == "" {
 		return InterfaceInfo{}, fmt.Errorf("failed to find mask for %q", iface)
 	}
-	// convert to decimal notatio
+	// convert to decimal notation
 	decimalParts := make([]string, len(netMask))
 	for i, part := range netMask {
 		decimalParts[i] = fmt.Sprintf("%d", part)

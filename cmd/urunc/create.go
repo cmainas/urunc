@@ -78,6 +78,17 @@ var createCommand = cli.Command{
 			containerID := context.Args().First()
 			nowTime := time.Now().UnixNano()
 			metrics.Log(fmt.Sprintf("%s,TS00,%d", containerID, nowTime))
+			if !context.Bool("reexec") {
+				err := handleQueueProxy(context)
+				if err != nil {
+					return err
+				}
+				err = handleNonBimaContainer(context)
+				if err != nil {
+					return err
+				}
+				return createUnikontainer(context)
+			}
 			return createUnikontainer(context)
 		}
 		containerID := context.Args().First()

@@ -15,6 +15,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"os"
 	"os/exec"
@@ -23,6 +24,7 @@ import (
 	"time"
 
 	"github.com/nubificus/urunc/pkg/unikontainers"
+	"github.com/opencontainers/runtime-spec/specs-go"
 	"github.com/sirupsen/logrus"
 	"github.com/urfave/cli"
 )
@@ -114,4 +116,52 @@ func fatalWithCode(err error, ret int) {
 	}
 
 	os.Exit(ret)
+}
+
+// handleQueueProxy check if provided bundle is a queue-proxy container
+// and adds a hardcoded IP to the process's environment
+func handleQueueProxy(context *cli.Context) error {
+	containerID := context.Args().First()
+	root := context.GlobalString("root")
+	if containerID == "" {
+		// cli.ShowAppHelpAndExit(context, 129)
+		return nil
+	}
+	ctrNamespace := filepath.Base(root)
+	bundle := filepath.Join("/run/containerd/io.containerd.runtime.v2.task/", ctrNamespace, containerID)
+
+	var spec specs.Spec
+	absDir, err := filepath.Abs(bundle)
+	if err != nil {
+		return fmt.Errorf("failed to find absolute bundle path: %w", err)
+	}
+	configDir := filepath.Join(absDir, "config.json")
+	data, err := os.ReadFile(configDir)
+	if err != nil {
+		return fmt.Errorf("failed to read config.json: %w", err)
+	}
+	if err := json.Unmarshal(data, &spec); err != nil {
+		return fmt.Errorf("failed to parse config.json: %w", err)
+	}
+	containerName := spec.Annotations["io.kubernetes.cri.container-name"]
+	if containerName == "queue-proxy" {
+		logrus.Info("This is a queue-proxy container. Adding IP env.")
+		spec.Process.Env = append(spec.Process.Env, "REDIRECT_IP=10.10.1.2")
+		fileInfo, err := os.Stat(configDir)
+		if err != nil {
+			return fmt.Errorf("error getting file info: %v", err)
+		}
+		permissions := fileInfo.Mode()
+		// Write the modified struct back to the JSON file
+		updatedData, err := json.MarshalIndent(spec, "", "  ")
+		if err != nil {
+			return fmt.Errorf("error marshalling JSON: %v", err)
+		}
+
+		err = os.WriteFile(configDir, updatedData, permissions)
+		if err != nil {
+			return fmt.Errorf("error writing to file: %v", err)
+		}
+	}
+	return nil
 }
