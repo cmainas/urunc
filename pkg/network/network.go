@@ -44,7 +44,6 @@ func NewNetworkManager(networkType string) (Manager, error) {
 		return &StaticNetwork{}, nil
 	case "dynamic":
 		return &DynamicNetwork{}, nil
-
 	default:
 		return nil, fmt.Errorf("network manager %s not supported", networkType)
 
