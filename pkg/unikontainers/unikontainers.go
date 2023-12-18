@@ -163,8 +163,11 @@ func (u *Unikontainer) Exec() error {
 		CmdLine: u.State.Annotations["com.urunc.unikernel.cmdline"],
 	}
 
-	// handle network
-	networkInfo, err := network.Setup()
+	netManager, err := network.NewNetworkManager(u.getNetworkType())
+	if err != nil {
+		return err
+	}
+	networkInfo, err := netManager.NetworkSetup()
 	if err != nil {
 		return err
 	}
@@ -591,4 +594,12 @@ func (u *Unikontainer) isRunning() bool {
 	hedge := hypervisors.Hedge{}
 	state := hedge.VMState(u.State.ID)
 	return state == "running"
+}
+
+// getNetworkType checks if current container is a knative user-container
+func (u Unikontainer) getNetworkType() string {
+	if u.Spec.Annotations["io.kubernetes.cri.container-name"] == "user-container" {
+		return "static"
+	}
+	return "dynamic"
 }
