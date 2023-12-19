@@ -15,18 +15,18 @@
 package network
 
 import (
+	"fmt"
 	"os/user"
 	"strconv"
 	"strings"
 
+	"github.com/nubificus/urunc/internal/constants"
 	"github.com/vishvananda/netlink"
 )
 
-const StaticIPAddr = "10.10.1.1/24"
+var StaticIPAddr = fmt.Sprintf("%s/24", constants.StaticNetworkTapIP)
 
 type StaticNetwork struct {
-	// ftaxnv tap device me ip 10.10.1.1
-	// sto cli tou unikernel dinw 10.10.10.2 + inject to idio sto queue-proxy container san env
 }
 
 func (n StaticNetwork) NetworkSetup() (*UnikernelNetworkInfo, error) {
@@ -70,8 +70,8 @@ func (n StaticNetwork) NetworkSetup() (*UnikernelNetworkInfo, error) {
 	return &UnikernelNetworkInfo{
 		TapDevice: newTapDevice.Attrs().Name,
 		EthDevice: Interface{
-			IP:             "10.10.1.2",
-			DefaultGateway: "10.10.1.1",
+			IP:             constants.StaticNetworkUnikernelIP,
+			DefaultGateway: constants.StaticNetworkTapIP,
 			Mask:           "255.255.255.0",
 			Interface:      "eth0", // or tap0_urunc?
 		},

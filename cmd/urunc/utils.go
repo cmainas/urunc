@@ -23,6 +23,7 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/nubificus/urunc/internal/constants"
 	"github.com/nubificus/urunc/pkg/unikontainers"
 	"github.com/opencontainers/runtime-spec/specs-go"
 	"github.com/sirupsen/logrus"
@@ -147,7 +148,7 @@ func handleQueueProxy(context *cli.Context) error {
 	containerName := spec.Annotations["io.kubernetes.cri.container-name"]
 	if containerName == "queue-proxy" {
 		logrus.Error("This is a queue-proxy container. Adding IP env.")
-		spec.Process.Env = append(spec.Process.Env, "REDIRECT_IP=10.10.1.2")
+		spec.Process.Env = append(spec.Process.Env, fmt.Sprintf("REDIRECT_IP=%s", constants.QueueProxyRedirectIP))
 		spec.Process.Env = append(spec.Process.Env, "URUNC_TEST_ENV=test")
 		fileInfo, err := os.Stat(configDir)
 		if err != nil {

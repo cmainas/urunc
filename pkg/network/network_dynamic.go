@@ -15,10 +15,12 @@
 package network
 
 import (
+	"fmt"
 	"os/user"
 	"strconv"
 	"strings"
 
+	"github.com/nubificus/urunc/internal/constants"
 	"github.com/vishvananda/netlink"
 )
 
@@ -87,7 +89,8 @@ func (n DynamicNetwork) NetworkSetup() (*UnikernelNetworkInfo, error) {
 			return nil, err
 		}
 	}
-	newIPAddr := strings.ReplaceAll("10.10.X.2/24", "X", strconv.Itoa(tapIndex+1))
+	ipTemplate := fmt.Sprintf("%s/24", constants.DynamicNetworkTapIP)
+	newIPAddr := strings.ReplaceAll(ipTemplate, "X", strconv.Itoa(tapIndex+1))
 	ipn, err := netlink.ParseAddr(newIPAddr)
 	if err != nil {
 		return nil, err
