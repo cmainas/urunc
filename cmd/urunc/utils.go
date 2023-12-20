@@ -20,6 +20,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"strings"
 	"syscall"
 	"time"
 
@@ -148,8 +149,15 @@ func handleQueueProxy(context *cli.Context) error {
 	containerName := spec.Annotations["io.kubernetes.cri.container-name"]
 	if containerName == "queue-proxy" {
 		logrus.Error("This is a queue-proxy container. Adding IP env.")
-		spec.Process.Env = append(spec.Process.Env, fmt.Sprintf("REDIRECT_IP=%s", constants.QueueProxyRedirectIP))
-		spec.Process.Env = append(spec.Process.Env, "URUNC_TEST_ENV=test")
+		for i, envVar := range spec.Process.Env {
+			if strings.HasPrefix(envVar, "SERVING_READINESS_PROBE") {
+				spec.Process.Env = remove(spec.Process.Env, i)
+			}
+		}
+		spec.Process.Env = append(spec.Process.Env, []string{
+			fmt.Sprintf("SERVING_READINESS_PROBE={\"tcpSocket\":{\"port\":8080,\"host\":\"%s\"},\"successThreshold\":1}", constants.QueueProxyRedirectIP),
+			fmt.Sprintf("REDIRECT_IP=%s", constants.QueueProxyRedirectIP),
+		}...)
 		fileInfo, err := os.Stat(configDir)
 		if err != nil {
 			return fmt.Errorf("error getting file info: %v", err)
@@ -167,4 +175,9 @@ func handleQueueProxy(context *cli.Context) error {
 		}
 	}
 	return nil
+}
+
+func remove(s []string, i int) []string {
+	s[i] = s[len(s)-1]
+	return s[:len(s)-1]
 }
