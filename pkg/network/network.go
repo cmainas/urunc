@@ -55,6 +55,7 @@ type Interface struct {
 	DefaultGateway string
 	Mask           string
 	Interface      string
+	MAC	       string
 }
 
 func getTapIndex() (int, error) {
@@ -133,6 +134,11 @@ func defaultInterfaceInfo() (Interface, error) {
 	if err != nil {
 		return Interface{}, err
 	}
+	IfMAC := ief.HardwareAddr.String()
+	if IfMAC == "" {
+		return Interface{}, fmt.Errorf("failed to get MAC address of %q", ief)
+	}
+
 	addrs, err := ief.Addrs()
 	if err != nil {
 		return Interface{}, err
@@ -171,6 +177,7 @@ func defaultInterfaceInfo() (Interface, error) {
 		DefaultGateway: gateway.String(),
 		Mask:           mask,
 		Interface:      DefaultInterface,
+		MAC:		IfMAC,
 	}, nil
 }
 

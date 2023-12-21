@@ -74,6 +74,7 @@ func (n StaticNetwork) NetworkSetup() (*UnikernelNetworkInfo, error) {
 			DefaultGateway: constants.StaticNetworkTapIP,
 			Mask:           "255.255.255.0",
 			Interface:      "eth0", // or tap0_urunc?
+			MAC:		redirectLink.Attrs().HardwareAddr.String(),
 		},
 	}, nil
 }
