@@ -109,6 +109,7 @@ func createUnikontainer(context *cli.Context) error {
 	if err != nil {
 		return err
 	}
+	logrus.WithField("CPU", unikontainer.Spec.Linux.Resources.CPU).WithField("MEMORY", unikontainer.Spec.Linux.Resources.Memory).Error("resources")
 	nowTime := time.Now().UnixNano()
 	metrics.Log(fmt.Sprintf("%s,TS01,%d", containerID, nowTime))
 

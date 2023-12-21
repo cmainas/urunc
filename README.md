@@ -55,6 +55,7 @@ If you already have these requirements, you can run a test container using `nerd
 
 ```bash
 sudo nerdctl run --rm -ti --snapshotter devmapper --runtime io.containerd.urunc.v2 harbor.nbfc.io/nubificus/urunc/redis-hvt-rump:latest unikernel
+sudo nerdctl run --rm -ti --memory 512 --cpus 1 --snapshotter devmapper --runtime io.containerd.urunc.v2 harbor.nbfc.io/nubificus/urunc/redis-hvt-rump:latest unikernel
 ```
 
 ![demo](docs/img/urunc-nerdctl-example.gif)
