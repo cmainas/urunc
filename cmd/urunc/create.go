@@ -68,16 +68,25 @@ var createCommand = cli.Command{
 		if err := checkArgs(context, 1, exactArgs); err != nil {
 			return err
 		}
+
+		if !context.Bool("reexec") {
+			containerID := context.Args().First()
+			metrics.Capture(containerID, "TS00")
+			err := handleQueueProxy(context)
+			if err != nil {
+				return err
+			}
+			err = handleNonBimaContainer(context)
+			if err != nil {
+				return err
+			}
+			return createUnikontainer(context)
+		}
 		err := handleNonBimaContainer(context)
 		if err != nil {
 			return err
 		}
 
-		if !context.Bool("reexec") {
-			containerID := context.Args().First()
-			metrics.Capture(containerID, "TS00")
-			return createUnikontainer(context)
-		}
 		containerID := context.Args().First()
 		metrics.Capture(containerID, "TS04")
 		return reexecUnikontainer(context)
