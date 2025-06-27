@@ -89,19 +89,8 @@ func (u *Unikraft) MonitorCli(_ string) string {
 func (u *Unikraft) Init(data UnikernelParams) error {
 	u.Env = data.EnvVars
 	u.Version = data.Version
-	// We use the first argument in the CLI args as the app name and the
-	// rest as its arguments.
-	switch len(data.CmdLine) {
-	case 0:
-		u.AppName = ""
-		u.Command = ""
-	case 1:
-		u.AppName = data.CmdLine[0]
-		u.Command = ""
-	default:
-		u.AppName = data.CmdLine[0]
-		u.Command = strings.Join(data.CmdLine[1:], " ")
-	}
+	u.AppName = "Unikraft"
+	u.Command = strings.Join(data.CmdLine, " ")
 
 	return u.configureUnikraftArgs(data.RootFSType, data.EthDeviceIP, data.EthDeviceGateway, data.EthDeviceMask)
 }
@@ -154,6 +143,9 @@ func (u *Unikraft) configureUnikraftArgs(rootFsType, ethDeviceIP, ethDeviceGatew
 		setCurrentArgs()
 	} else {
 		setCompatArgs()
+		// Remove environment variables, since old versions do not
+		// support them
+		u.Env = nil
 	}
 	return nil
 }
