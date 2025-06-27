@@ -192,7 +192,7 @@ func TestNerdctl(t *testing.T) {
 			TestFunc:       userGroupTest,
 		},
 		{
-			Image:          "harbor.nbfc.io/nubificus/urunc/redis-qemu-unikraft-initrd:latest",
+			Image:          "harbor.nbfc.io/nubificus/urunc/redis-qemu-unikraft-initrd:ucli",
 			Name:           "Qemu-unikraft-ping-redis",
 			Devmapper:      false,
 			Seccomp:        true,
@@ -252,7 +252,7 @@ func TestNerdctl(t *testing.T) {
 			TestFunc:       pingTest,
 		},
 		{
-			Image:          "harbor.nbfc.io/nubificus/urunc/redis-qemu-unikraft-initrd:latest",
+			Image:          "harbor.nbfc.io/nubificus/urunc/redis-qemu-unikraft-initrd:ucli",
 			Name:           "Qemu-unikraft-with-seccomp",
 			Devmapper:      false,
 			Seccomp:        true,
@@ -267,7 +267,7 @@ func TestNerdctl(t *testing.T) {
 			TestFunc:       seccompTest,
 		},
 		{
-			Image:          "harbor.nbfc.io/nubificus/urunc/redis-qemu-unikraft-initrd:latest",
+			Image:          "harbor.nbfc.io/nubificus/urunc/redis-qemu-unikraft-initrd:ucli",
 			Name:           "Qemu-unikraft-without-seccomp",
 			Devmapper:      false,
 			Seccomp:        false,
@@ -282,7 +282,7 @@ func TestNerdctl(t *testing.T) {
 			TestFunc:       seccompTest,
 		},
 		{
-			Image:          "harbor.nbfc.io/nubificus/urunc/nginx-firecracker-unikraft-initrd:latest",
+			Image:          "harbor.nbfc.io/nubificus/urunc/nginx-firecracker-unikraft-initrd:ucli",
 			Name:           "Firecracker-unikraft-ping-nginx",
 			Devmapper:      false,
 			Seccomp:        true,
@@ -312,7 +312,7 @@ func TestNerdctl(t *testing.T) {
 			TestFunc:       pingTest,
 		},
 		{
-			Image:          "harbor.nbfc.io/nubificus/urunc/nginx-firecracker-unikraft-initrd:latest",
+			Image:          "harbor.nbfc.io/nubificus/urunc/nginx-firecracker-unikraft-initrd:ucli",
 			Name:           "Firecracker-unikraft-with-seccomp",
 			Devmapper:      false,
 			Seccomp:        true,
@@ -327,7 +327,7 @@ func TestNerdctl(t *testing.T) {
 			TestFunc:       seccompTest,
 		},
 		{
-			Image:          "harbor.nbfc.io/nubificus/urunc/nginx-firecracker-unikraft-initrd:latest",
+			Image:          "harbor.nbfc.io/nubificus/urunc/nginx-firecracker-unikraft-initrd:ucli",
 			Name:           "Firecracker-unikraft-without-seccomp",
 			Devmapper:      false,
 			Seccomp:        false,
@@ -342,7 +342,7 @@ func TestNerdctl(t *testing.T) {
 			TestFunc:       seccompTest,
 		},
 		{
-			Image:          "harbor.nbfc.io/nubificus/urunc/nginx-firecracker-unikraft-initrd:latest",
+			Image:          "harbor.nbfc.io/nubificus/urunc/nginx-firecracker-unikraft-initrd:ucli",
 			Name:           "Firecracker-unikraft-namespaces",
 			Devmapper:      false,
 			Seccomp:        true,
@@ -496,7 +496,7 @@ func TestCtr(t *testing.T) {
 			TestFunc:       matchTest,
 		},
 		{
-			Image:          "harbor.nbfc.io/nubificus/urunc/hello-env-qemu-unikraft-initrd:latest",
+			Image:          "harbor.nbfc.io/nubificus/urunc/hello-env-qemu-unikraft-initrd:ucli",
 			Name:           "Qemu-unikraft-environment-variables",
 			Devmapper:      false,
 			Seccomp:        true,
@@ -544,7 +544,7 @@ func TestCtr(t *testing.T) {
 			TestFunc:       matchTest,
 		},
 		{
-			Image:          "harbor.nbfc.io/nubificus/urunc/hello-env-firecracker-unikraft-initrd:latest",
+			Image:          "harbor.nbfc.io/nubificus/urunc/hello-env-firecracker-unikraft-initrd:ucli",
 			Name:           "Firecracker-unikraft-environment-variables",
 			Devmapper:      false,
 			Seccomp:        true,
@@ -682,7 +682,7 @@ func TestCrictl(t *testing.T) {
 			TestFunc:       userGroupTest,
 		},
 		{
-			Image:          "harbor.nbfc.io/nubificus/urunc/redis-qemu-unikraft-initrd:latest",
+			Image:          "harbor.nbfc.io/nubificus/urunc/redis-qemu-unikraft-initrd:ucli",
 			Name:           "Qemu-unikraft-redis",
 			Devmapper:      false,
 			Seccomp:        true,
@@ -759,7 +759,7 @@ func TestCrictl(t *testing.T) {
 		// TODO: We need to rewrite this test
 		// Ideally we want to spawn a knative queue-proxy and then the unikernel
 		{
-			Image:          "harbor.nbfc.io/nubificus/urunc/httpreply-firecracker-unikraft:latest",
+			Image:          "harbor.nbfc.io/nubificus/urunc/httpreply-firecracker-unikraft:ucli",
 			Name:           "Firecracker-unikraft-httpreply-static-net",
 			Devmapper:      false,
 			Seccomp:        true,
@@ -774,7 +774,7 @@ func TestCrictl(t *testing.T) {
 			TestFunc:       httpStaticNetTest,
 		},
 		{
-			Image:          "harbor.nbfc.io/nubificus/urunc/nginx-firecracker-unikraft-initrd:latest",
+			Image:          "harbor.nbfc.io/nubificus/urunc/nginx-firecracker-unikraft-initrd:ucli",
 			Name:           "Firecracker-unikraft-namespaces",
 			Devmapper:      false,
 			Seccomp:        true,
@@ -789,7 +789,7 @@ func TestCrictl(t *testing.T) {
 			TestFunc:       namespaceTest,
 		},
 		{
-			Image:          "harbor.nbfc.io/nubificus/urunc/nginx-firecracker-unikraft-initrd:latest",
+			Image:          "harbor.nbfc.io/nubificus/urunc/nginx-firecracker-unikraft-initrd:ucli",
 			Name:           "Firecracker-unikraft-UserGroup",
 			Devmapper:      false,
 			Seccomp:        true,
@@ -849,7 +849,7 @@ func TestDocker(t *testing.T) {
 			TestFunc:       userGroupTest,
 		},
 		{
-			Image:          "harbor.nbfc.io/nubificus/urunc/redis-qemu-unikraft-initrd:latest",
+			Image:          "harbor.nbfc.io/nubificus/urunc/redis-qemu-unikraft-initrd:ucli",
 			Name:           "Qemu-unikraft-ping-redis",
 			Devmapper:      false,
 			Seccomp:        true,
@@ -864,7 +864,7 @@ func TestDocker(t *testing.T) {
 			TestFunc:       pingTest,
 		},
 		{
-			Image:          "harbor.nbfc.io/nubificus/urunc/nginx-qemu-unikraft-initrd:latest",
+			Image:          "harbor.nbfc.io/nubificus/urunc/nginx-qemu-unikraft-initrd:ucli",
 			Name:           "Qemu-unikraft-ping-nginx",
 			Devmapper:      false,
 			Seccomp:        true,
@@ -924,7 +924,7 @@ func TestDocker(t *testing.T) {
 			TestFunc:       pingTest,
 		},
 		{
-			Image:          "harbor.nbfc.io/nubificus/urunc/redis-qemu-unikraft-initrd:latest",
+			Image:          "harbor.nbfc.io/nubificus/urunc/redis-qemu-unikraft-initrd:ucli",
 			Name:           "Qemu-unikraft-with-seccomp",
 			Devmapper:      false,
 			Seccomp:        true,
@@ -939,7 +939,7 @@ func TestDocker(t *testing.T) {
 			TestFunc:       seccompTest,
 		},
 		{
-			Image:          "harbor.nbfc.io/nubificus/urunc/redis-qemu-unikraft-initrd:latest",
+			Image:          "harbor.nbfc.io/nubificus/urunc/redis-qemu-unikraft-initrd:ucli",
 			Name:           "Qemu-unikraft-without-seccomp",
 			Devmapper:      false,
 			Seccomp:        false,
@@ -954,7 +954,7 @@ func TestDocker(t *testing.T) {
 			TestFunc:       seccompTest,
 		},
 		{
-			Image:          "harbor.nbfc.io/nubificus/urunc/redis-qemu-unikraft-initrd:latest",
+			Image:          "harbor.nbfc.io/nubificus/urunc/redis-qemu-unikraft-initrd:ucli",
 			Name:           "Qemu-unikraft-UserGroup",
 			Devmapper:      false,
 			Seccomp:        true,
@@ -969,7 +969,7 @@ func TestDocker(t *testing.T) {
 			TestFunc:       userGroupTest,
 		},
 		{
-			Image:          "harbor.nbfc.io/nubificus/urunc/nginx-firecracker-unikraft-initrd:latest",
+			Image:          "harbor.nbfc.io/nubificus/urunc/nginx-firecracker-unikraft-initrd:ucli",
 			Name:           "Firecracker-unikraft-ping-nginx",
 			Devmapper:      false,
 			Seccomp:        true,
@@ -999,7 +999,7 @@ func TestDocker(t *testing.T) {
 			TestFunc:       pingTest,
 		},
 		{
-			Image:          "harbor.nbfc.io/nubificus/urunc/nginx-firecracker-unikraft-initrd:latest",
+			Image:          "harbor.nbfc.io/nubificus/urunc/nginx-firecracker-unikraft-initrd:ucli",
 			Name:           "Firecracker-unikraft-with-seccomp",
 			Devmapper:      false,
 			Seccomp:        true,
@@ -1014,7 +1014,7 @@ func TestDocker(t *testing.T) {
 			TestFunc:       seccompTest,
 		},
 		{
-			Image:          "harbor.nbfc.io/nubificus/urunc/nginx-firecracker-unikraft-initrd:latest",
+			Image:          "harbor.nbfc.io/nubificus/urunc/nginx-firecracker-unikraft-initrd:ucli",
 			Name:           "Firecracker-unikraft-without-seccomp",
 			Devmapper:      false,
 			Seccomp:        false,
@@ -1029,7 +1029,7 @@ func TestDocker(t *testing.T) {
 			TestFunc:       seccompTest,
 		},
 		{
-			Image:          "harbor.nbfc.io/nubificus/urunc/nginx-firecracker-unikraft-initrd:latest",
+			Image:          "harbor.nbfc.io/nubificus/urunc/nginx-firecracker-unikraft-initrd:ucli",
 			Name:           "Firecracker-unikraft-namespaces",
 			Devmapper:      false,
 			Seccomp:        true,
