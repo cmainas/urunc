@@ -141,7 +141,6 @@ func prepareMonRootfs(monRootfs string, monitorPath string, dmPath string, needs
 	// TODO: Remove these when we switch to static binaries
 	if len(monitorName) >= 4 && monitorName[:4] == "qemu" {
 		qDataPath, err := findQemuDataDir("qemu")
-		fmt.Println(qDataPath)
 		if err != nil {
 			return err
 		}
@@ -151,14 +150,16 @@ func prepareMonRootfs(monRootfs string, monitorPath string, dmPath string, needs
 			return err
 		}
 
-		// In urunc-deploy, we do not install seabios and hence
-		// we do not need it. SO if we do not find, just ignore it.
+		// In urunc-deploy and in some distros seabios does not exist and
+		// we do not need it. So if we could not find it, just ignore it.
 		sBiosPath, err := findQemuDataDir("seabios")
 		if err == nil {
 			err = fileFromHost(monRootfs, sBiosPath, "/usr/share/seabios", unix.MS_BIND|unix.MS_PRIVATE, false)
 			if err != nil {
 				return err
 			}
+		} else if !os.IsNotExist(err) {
+			return fmt.Errorf("failed to get info of seabios directory: %w", err)
 		}
 	}
 
@@ -498,21 +499,35 @@ func containsNS(namespaces []specs.LinuxNamespace, nsType specs.LinuxNamespaceTy
 // At first checks /usr/local/share and if it does not exist, it falls back to
 // /usr/share. If /usr/local/share is a soft link, it will find its target.
 func findQemuDataDir(basename string) (string, error) {
+	// First check if the file exists under /usr/local/share
 	qdPath := filepath.Join("/usr/local/share/", basename)
 	info, err := os.Lstat(qdPath)
 	if err != nil {
 		if !os.IsNotExist(err) {
 			return "", fmt.Errorf("failed to get info of %s: %w", qdPath, err)
 		}
-		return filepath.Join("/usr/share/", basename), nil
-	}
-	if info.Mode()&os.ModeSymlink != 0 {
-		qdPath, err = os.Readlink(qdPath)
-		if err != nil {
-			return "", fmt.Errorf("failed to get target of %s %w", qdPath, err)
-		}
-	} else {
+		// The file does not exist under /usr/local/share
+		// fallback to the usual path /usr/share/
 		qdPath = filepath.Join("/usr/share/", basename)
+	} else {
+		// The file exists under /usr/local/share, but check if it is a link
+		if info.Mode()&os.ModeSymlink != 0 {
+			// It is a link, get the target
+			qdPath, err = os.Readlink(qdPath)
+			if err != nil {
+				return "", fmt.Errorf("failed to get target of %s %w", qdPath, err)
+			}
+		}
+
+		// It is not a link, so we found it
+		return qdPath, nil
+	}
+
+	// Either by fallback to /usr/share/ or by following the link
+	// we still need to check if the new path exists.
+	_, err = os.Stat(qdPath)
+	if err != nil {
+		return "", err
 	}
 
 	return qdPath, nil
