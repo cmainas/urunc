@@ -49,12 +49,18 @@ type UnikraftVFS struct {
 
 func (u *Unikraft) CommandString() (string, error) {
 	envVarString := ""
+	consoleStr := ""
+
+	if runtime.GOARCH == "arm64" {
+		consoleStr = "console=ttyAMA0"
+	}
 
 	if len(u.Env) > 0 {
 		envVarString = "env.vars=[ " + strings.Join(u.Env, " ") + " ]"
 	}
 
-	return fmt.Sprintf("%s %s %s %s %s %s -- %s", u.AppName,
+	return fmt.Sprintf("%s %s %s %s %s %s %s -- %s", u.AppName,
+		consoleStr,
 		envVarString,
 		u.Net.Address,
 		u.Net.Gateway,
