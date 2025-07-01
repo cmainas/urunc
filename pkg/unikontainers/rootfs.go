@@ -325,7 +325,7 @@ func fileFromHost(monRootfs string, hostPath string, target string, mFlags int, 
 	var fileInfo unix.Stat_t
 	err := unix.Stat(hostPath, &fileInfo)
 	if err != nil {
-		return fmt.Errorf("failed to stat file %s: %w", hostPath, err)
+		return err
 	}
 	mode := fileInfo.Mode
 
