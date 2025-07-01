@@ -129,7 +129,10 @@ func prepareMonRootfs(monRootfs string, monitorPath string, dmPath string, needs
 
 		err = fileFromHost(monRootfs, "/lib64", "", unix.MS_BIND|unix.MS_PRIVATE, false)
 		if err != nil {
-			return err
+			// If the file does not exist, just ignore it
+			if !os.IsNotExist(err) {
+				return err
+			}
 		}
 
 		err = fileFromHost(monRootfs, "/usr/lib", "", unix.MS_BIND|unix.MS_PRIVATE, false)
@@ -150,16 +153,17 @@ func prepareMonRootfs(monRootfs string, monitorPath string, dmPath string, needs
 			return err
 		}
 
-		// In urunc-deploy and in some distros seabios does not exist and
-		// we do not need it. So if we could not find it, just ignore it.
 		sBiosPath, err := findQemuDataDir("seabios")
-		if err == nil {
-			err = fileFromHost(monRootfs, sBiosPath, "/usr/share/seabios", unix.MS_BIND|unix.MS_PRIVATE, false)
-			if err != nil {
+		if err != nil {
+			return fmt.Errorf("failed to get info of seabios directory: %w", err)
+		}
+		err = fileFromHost(monRootfs, sBiosPath, "/usr/share/seabios", unix.MS_BIND|unix.MS_PRIVATE, false)
+		if err != nil {
+			// In urunc-deploy and in some distros seabios does not exist and
+			// we do not need it. So if we could not find it, just ignore it.
+			if !os.IsNotExist(err) {
 				return err
 			}
-		} else if !os.IsNotExist(err) {
-			return fmt.Errorf("failed to get info of seabios directory: %w", err)
 		}
 	}
 
@@ -521,13 +525,6 @@ func findQemuDataDir(basename string) (string, error) {
 
 		// It is not a link, so we found it
 		return qdPath, nil
-	}
-
-	// Either by fallback to /usr/share/ or by following the link
-	// we still need to check if the new path exists.
-	_, err = os.Stat(qdPath)
-	if err != nil {
-		return "", err
 	}
 
 	return qdPath, nil
