@@ -17,6 +17,7 @@ package unikernels
 import (
 	"errors"
 	"fmt"
+	"runtime"
 	"strings"
 
 	version "github.com/hashicorp/go-version"
