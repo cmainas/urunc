@@ -138,13 +138,6 @@ func (fc *Firecracker) Execve(args ExecArgs, _ unikernels.Unikernel) error {
 		}
 		FCDrives = append(FCDrives, aBlock)
 	}
-	// TODO: Check if this check causes any performance drop
-	// or explore alternative implementations
-	if runtime.GOARCH == "arm64" {
-		consoleStr := " console=ttyS0"
-		args.Command += consoleStr
-	}
-
 	FCSource := FirecrackerBootSource{
 		ImagePath:  args.UnikernelPath,
 		BootArgs:   args.Command,
