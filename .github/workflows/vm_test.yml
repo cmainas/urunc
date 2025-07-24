@@ -149,9 +149,9 @@ jobs:
 
     - name: Install crictl
       run: |
-        wget https://github.com/kubernetes-sigs/cri-tools/releases/download/${{ inputs.crictl_version }}/crictl-${{ inputs.crictl_version }}-linux-amd64.tar.gz
-        sudo tar zxvf crictl-${{ inputs.crictl_version }}-linux-amd64.tar.gz -C /usr/local/bin
-        rm -f crictl-${{ inputs.crictl_version }}-linux-amd64.tar.gz
+        wget https://github.com/kubernetes-sigs/cri-tools/releases/download/${{ inputs.crictl_version }}/crictl-${{ inputs.crictl_version }}-linux-${{matrix.arch}}.tar.gz
+        sudo tar zxvf crictl-${{ inputs.crictl_version }}-linux-${{matrix.arch}}.tar.gz -C /usr/local/bin
+        rm -f crictl-${{ inputs.crictl_version }}-linux-${{matrix.arch}}.tar.gz
         sudo tee -a /etc/crictl.yaml > /dev/null <<'EOT'
         runtime-endpoint: unix:///run/containerd/containerd.sock
         image-endpoint: unix:///run/containerd/containerd.sock
@@ -217,8 +217,16 @@ jobs:
       id: test
       if: ${{ !cancelled() }}
       run: |
+        # Set up Go environment properly
+        export GOROOT=$(go env GOROOT)
+        export PATH="$GOROOT/bin:$PATH"
+        go version
+        go env GOROOT
         if [ "${{ matrix.arch }}" = "arm64" ]; then
-          sudo make ${{ matrix.test }}_Spt
+          # TODO: Remove the following commented out lines since Go 1.24 is properly installed
+          # sed -i '/^toolchain go1\.24\.1$/d' go.mod
+          # sed -i 's/^go 1\.23\.0$/go 1.23/' go.mod
+          sudo -E env "PATH=$PATH" "GOROOT=$GOROOT" make ${{ matrix.test }}_Spt
         else
-          sudo make ${{ matrix.test }}
+          sudo -E env "PATH=$PATH" "GOROOT=$GOROOT" make ${{ matrix.test }}
         fi
