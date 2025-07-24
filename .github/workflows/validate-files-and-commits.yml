@@ -19,17 +19,25 @@ jobs:
             runner: ubuntu-22.04
       fail-fast: false
     continue-on-error: true
+    defaults:
+      run:
+        working-directory: .github/linters
+
 
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
         with:
-          ref: ${{ github.event.pull_request.head.sha }}
+          node-version: '22'
+
+      - run: npm install --legacy-peer-deps
 
       - name: Run commitlint
-        uses: wagoid/commitlint-github-action@v6
-        with:
-          configFile: .github/linters/commitlint.config.mjs
+        run: |
+          git fetch origin main --depth=1
+          npx commitlint --from=origin/main --config ./commitlint.config.js
 
   linter-typos:
     name: Spell Check Repo
@@ -45,9 +53,28 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
+      - name: Debug typos on cmd/
+        uses: crate-ci/typos@master
         with:
-          ref: ${{ github.event.pull_request.head.sha }}
-
+          config: .github/linters/typos.toml
+          files: ./cmd
+        continue-on-error: true
+      
+      - name: Debug typos on pkg/
+        uses: crate-ci/typos@master  
+        with:
+          config: .github/linters/typos.toml
+          files: ./pkg
+        continue-on-error: true
+      
+      - name: List files in directories
+        run: |
+          echo "Files in cmd/:"
+          find cmd/ -type f | head -10
+          echo ""
+          echo "Files in pkg/:"
+          find pkg/ -type f | head -10
+      
       - name: Spell check
         uses: crate-ci/typos@master
         with:
@@ -67,8 +94,6 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event.pull_request.head.sha }}
 
       - name: Fix paths
         run: |
