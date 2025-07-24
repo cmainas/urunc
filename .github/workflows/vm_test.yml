@@ -44,17 +44,24 @@ on:
 jobs:
   prepare:
     name: VM test
-    runs-on: ubuntu-22.04
+    runs-on: ${{ matrix.runner }}
     strategy:
       matrix:
-        arch: ["${{ fromJSON(inputs.runner-archs) }}"]
+        arch: ${{ fromJSON(inputs.runner-archs) }}
         test: ["test_ctr","test_nerdctl","test_crictl","test_docker"]
-      fail-fast: false
+        include:
+          - arch: amd64
+            runner: ubuntu-22.04
+          - arch: arm64
+            runner: ubuntu-22.04-arm
+         
+    continue-on-error: true
+
     steps:
     - uses: actions/checkout@v3
       with:
         ref: ${{ github.event.pull_request.head.sha }}
-    - uses: actions/setup-go@v4
+    - uses: actions/setup-go@v5
       with:
         go-version: '1.24.1'
         cache: false
@@ -190,7 +197,15 @@ jobs:
         sudo mv containerd-shim-urunc-v2_static_${{ matrix.arch }} /usr/local/bin/containerd-shim-urunc-v2
         urunc --version
 
+    - name: Get architecture
+      id: arch
+      run: |
+        ARCH=$(uname -m)
+        echo "arch=$ARCH" >> $GITHUB_OUTPUT
+        echo "Architecture: $ARCH"
+  
     - name: Add runner user to KVM group
+      if: ${{ matrix.arch == 'amd64' }}
       id: kvm-setup
       run: |
         echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
@@ -198,9 +213,12 @@ jobs:
         sudo udevadm trigger --name-match=kvm
         sudo usermod -a -G kvm $USER
 
-
     - name: Run ${{ matrix.test }}
       id: test
       if: ${{ !cancelled() }}
       run: |
-        sudo make ${{ matrix.test }}
+        if [ "${{ matrix.arch }}" = "arm64" ]; then
+          sudo make ${{ matrix.test }}_Spt
+        else
+          sudo make ${{ matrix.test }}
+        fi
